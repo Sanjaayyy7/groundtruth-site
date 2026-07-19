@@ -50,6 +50,21 @@ body {
   top: 1rem;
 }
 
+/* Below-fold reveal: content is visible in server HTML; hydration hides
+   not-yet-seen elements and transitions them in once. */
+.reveal-hidden {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.reveal-shown {
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
+}
+
 /* Connector paths draw in as the diagram enters the viewport. */
 .flow-path {
   stroke-dasharray: 1;

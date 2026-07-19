@@ -1,4 +1,3 @@
-import { MotionRoot } from "@/components/ui/MotionRoot";
 import { Hero } from "@/components/sections/Hero";
 import { Problem } from "@/components/sections/Problem";
 import { Architecture } from "@/components/sections/Architecture";
@@ -28,7 +27,7 @@ const jsonLd = {
 
 export default function Home() {
   return (
-    <MotionRoot>
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -44,6 +43,6 @@ export default function Home() {
       <Lessons />
       <Close />
       <Footer />
-    </MotionRoot>
+    </>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { useInView, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { usePrefersReducedMotion } from "@/lib/useReveal";
 import { Reveal } from "@/components/ui/Reveal";
 
 interface FlowNode {
@@ -35,10 +35,26 @@ const nodes: FlowNode[] = [
  * the diagram is complete without any interaction or motion.
  */
 export function ReasoningFlow() {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-15%" });
-  const reduced = useReducedMotion();
+  const ref = useRef<HTMLElement>(null);
+  const [inView, setInView] = useState(false);
+  const reduced = usePrefersReducedMotion();
   const drawn = inView || reduced;
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -15% 0px" }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <figure ref={ref} className="mx-auto max-w-2xl">

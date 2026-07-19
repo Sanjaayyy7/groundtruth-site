@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { animate, useInView, useReducedMotion } from "framer-motion";
 
 interface CounterProps {
   value: string | number;
@@ -10,29 +9,39 @@ interface CounterProps {
 
 /**
  * Numeric values tick up once when scrolled into view; string values
- * (versions, percentages, hashes) render as-is. Reduced motion renders
- * the final value immediately. tabular-nums keeps width stable — no CLS.
+ * (versions, percentages, hashes) render as-is. Server HTML carries the
+ * final value — the count-up is a progressive enhancement, skipped under
+ * reduced motion. tabular-nums keeps width stable, so no layout shift.
  */
 export function Counter({ value, className }: CounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-10%" });
-  const reduced = useReducedMotion();
-  const numeric = typeof value === "number";
-  const [display, setDisplay] = useState<string>(numeric ? "0" : String(value));
+  const [display, setDisplay] = useState<string>(String(value));
 
   useEffect(() => {
-    if (!numeric || reduced) {
-      setDisplay(String(value));
-      return;
-    }
-    if (!inView) return;
-    const controls = animate(0, value, {
-      duration: 0.8,
-      ease: "easeOut",
-      onUpdate: (v) => setDisplay(String(Math.round(v))),
+    const el = ref.current;
+    if (typeof value !== "number" || !el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    let raf = 0;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      observer.disconnect();
+      const start = performance.now();
+      const duration = 800;
+      const tick = (now: number) => {
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3);
+        setDisplay(String(Math.round(eased * value)));
+        if (t < 1) raf = requestAnimationFrame(tick);
+      };
+      raf = requestAnimationFrame(tick);
     });
-    return () => controls.stop();
-  }, [inView, numeric, reduced, value]);
+    observer.observe(el);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  }, [value]);
 
   return (
     <span

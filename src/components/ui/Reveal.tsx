@@ -1,6 +1,6 @@
 "use client";
 
-import { m, useReducedMotion } from "framer-motion";
+import { useRevealOnce } from "@/lib/useReveal";
 
 interface RevealProps {
   children: React.ReactNode;
@@ -8,22 +8,18 @@ interface RevealProps {
   className?: string;
 }
 
-export function Reveal({ children, delay = 0, className }: RevealProps) {
-  const reduced = useReducedMotion();
-
-  if (reduced) {
-    return <div className={className}>{children}</div>;
-  }
+export function Reveal({ children, delay = 0, className = "" }: RevealProps) {
+  const { ref, state } = useRevealOnce<HTMLDivElement>();
 
   return (
-    <m.div
-      className={className}
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10%" }}
-      transition={{ duration: 0.5, ease: "easeOut", delay }}
+    <div
+      ref={ref}
+      className={`${className} ${state === "hidden" ? "reveal-hidden" : ""} ${
+        state === "shown" ? "reveal-shown" : ""
+      }`}
+      style={state !== "idle" ? { transitionDelay: `${delay}s` } : undefined}
     >
       {children}
-    </m.div>
+    </div>
   );
 }
