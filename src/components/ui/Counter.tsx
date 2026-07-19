@@ -48,8 +48,8 @@ export function Counter({ value, className }: CounterProps) {
       ref={ref}
       className={className}
       style={{ fontVariantNumeric: "tabular-nums" }}
-      aria-label={String(value)}
     >
+      <span className="sr-only">{String(value)}</span>
       <span aria-hidden="true">{display}</span>
     </span>
   );

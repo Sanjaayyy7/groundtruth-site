@@ -76,8 +76,8 @@ export function Verification() {
         </Reveal>
         <ul className="mt-14 grid gap-x-12 gap-y-10 lg:grid-cols-2">
           {evidence.map((entry, i) => (
-            <Reveal key={entry.item} delay={i * 0.04}>
-              <li className="flex gap-4">
+            <li key={entry.item}>
+              <Reveal delay={i * 0.04} className="flex gap-4">
                 <CheckGlyph />
                 <div>
                   <a
@@ -90,8 +90,8 @@ export function Verification() {
                     {entry.detail}
                   </p>
                 </div>
-              </li>
-            </Reveal>
+              </Reveal>
+            </li>
           ))}
         </ul>
         <Reveal>
