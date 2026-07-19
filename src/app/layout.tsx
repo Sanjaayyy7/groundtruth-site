@@ -1,11 +1,25 @@
 import type { Metadata } from "next";
 import { plexSans, plexMono } from "@/lib/fonts";
+import { SITE_URL, SITE_TITLE, SITE_DESCRIPTION } from "@/lib/site";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Groundtruth — Deterministic AI Evaluation, Verified",
-  description:
-    "An engineering case study: an AI agent evaluation platform that measures, audits, and validates its own pipeline. 67 commits, 170 tests, every claim traceable.",
+  metadataBase: new URL(SITE_URL),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    siteName: "Groundtruth",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+  },
 };
 
 export default function RootLayout({
