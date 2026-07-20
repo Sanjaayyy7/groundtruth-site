@@ -2,7 +2,7 @@
  * Canonical site URL. Points at the Vercel deployment; update once a
  * custom domain is attached.
  */
-export const SITE_URL = "https://groundtruth-site.vercel.app";
+export const SITE_URL = "https://groundtruthv08.vercel.app/";
 
 export const SITE_TITLE = "Groundtruth — Deterministic AI Evaluation, Verified";
 
